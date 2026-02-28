@@ -1,0 +1,185 @@
+# A to Z Shop Management - Application Configuration
+# Copy this file to application.properties and update with your values
+
+# ========================================
+# Server Configuration
+# ========================================
+server.port=8080
+server.servlet.context-path=/
+server.error.include-message=always
+server.error.include-stacktrace=on_param
+
+# ========================================
+# Database Configuration
+# ========================================
+spring.datasource.url=jdbc:postgresql://localhost:5432/atozshop
+spring.datasource.username=atozshop
+spring.datasource.password=atozshop123
+spring.datasource.driver-class-name=org.postgresql.Driver
+
+# Connection Pool
+spring.datasource.hikari.maximum-pool-size=10
+spring.datasource.hikari.minimum-idle=5
+spring.datasource.hikari.connection-timeout=30000
+spring.datasource.hikari.idle-timeout=600000
+spring.datasource.hikari.max-lifetime=1800000
+
+# ========================================
+# JPA / Hibernate Configuration
+# ========================================
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=false
+spring.jpa.properties.hibernate.format_sql=true
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+spring.jpa.properties.hibernate.jdbc.batch_size=20
+spring.jpa.properties.hibernate.order_inserts=true
+spring.jpa.properties.hibernate.order_updates=true
+spring.jpa.properties.hibernate.jdbc.time_zone=UTC
+
+# Enable lazy loading
+spring.jpa.open-in-view=false
+
+# ========================================
+# Logging Configuration
+# ========================================
+logging.level.root=INFO
+logging.level.com.atozshop=DEBUG
+logging.level.org.springframework.web=INFO
+logging.level.org.hibernate.SQL=DEBUG
+logging.level.org.hibernate.type.descriptor.sql.BasicBinder=TRACE
+
+# Log file
+logging.file.name=logs/atozshop.log
+logging.file.max-size=10MB
+logging.file.max-history=30
+
+# ========================================
+# JWT Configuration
+# ========================================
+# IMPORTANT: Change this secret in production!
+jwt.secret=your-super-secret-key-change-this-in-production-min-256-bits
+jwt.expiration=86400000
+# Token expiration: 86400000ms = 24 hours
+
+# ========================================
+# File Upload Configuration
+# ========================================
+spring.servlet.multipart.enabled=true
+spring.servlet.multipart.max-file-size=10MB
+spring.servlet.multipart.max-request-size=10MB
+spring.servlet.multipart.file-size-threshold=2KB
+
+# Upload directory
+file.upload.dir=uploads/
+
+# ========================================
+# Jackson (JSON) Configuration
+# ========================================
+spring.jackson.serialization.write-dates-as-timestamps=false
+spring.jackson.time-zone=UTC
+spring.jackson.default-property-inclusion=non_null
+
+# ========================================
+# CORS Configuration
+# ========================================
+# Allowed origins (comma-separated)
+cors.allowed-origins=http://localhost:3000,http://localhost:5173,http://localhost:4200
+
+# ========================================
+# Actuator (Monitoring)
+# ========================================
+management.endpoints.web.exposure.include=health,info,metrics,prometheus
+management.endpoint.health.show-details=when-authorized
+management.metrics.export.prometheus.enabled=true
+
+# ========================================
+# API Documentation (Swagger/OpenAPI)
+# ========================================
+springdoc.api-docs.path=/api-docs
+springdoc.swagger-ui.path=/swagger-ui.html
+springdoc.swagger-ui.enabled=true
+
+# ========================================
+# Email Configuration (Optional - Phase 8)
+# ========================================
+spring.mail.host=smtp.gmail.com
+spring.mail.port=587
+spring.mail.username=your-email@gmail.com
+spring.mail.password=your-app-password
+spring.mail.properties.mail.smtp.auth=true
+spring.mail.properties.mail.smtp.starttls.enable=true
+
+# ========================================
+# Redis Configuration (Optional - Caching)
+# ========================================
+#spring.redis.host=localhost
+#spring.redis.port=6379
+#spring.redis.password=
+#spring.cache.type=redis
+#spring.cache.redis.time-to-live=600000
+
+# ========================================
+# Application-Specific Configuration
+# ========================================
+
+# Tenant Configuration
+app.default-tenant-id=1
+app.tenant-header-name=X-Tenant-ID
+
+# Stock Configuration
+app.stock.prevent-negative=true
+app.stock.reservation-timeout-minutes=15
+
+# Billing Configuration
+app.billing.invoice-prefix=INV
+app.billing.auto-number-format=%s-%06d
+app.billing.thermal-printer-enabled=true
+app.billing.thermal-printer-width=80
+
+# Order Configuration
+app.order.auto-cancel-minutes=1440
+app.order.default-delivery-fee=0.00
+app.order.max-cart-items=50
+
+# Pricing Configuration
+app.pricing.default-currency=INR
+app.pricing.default-tax-rate=18.0
+
+# Barcode/QR Configuration
+app.barcode.format=EAN13
+app.qr.enabled=true
+
+# Low Stock Alert
+app.alert.low-stock-threshold=10
+app.alert.email-enabled=false
+
+# Report Configuration
+app.report.default-date-range-days=30
+app.report.export-formats=PDF,EXCEL,CSV
+
+# ========================================
+# Security Configuration
+# ========================================
+app.security.password-min-length=8
+app.security.password-require-special-char=true
+app.security.max-login-attempts=5
+app.security.lockout-duration-minutes=30
+
+# ========================================
+# Performance Configuration
+# ========================================
+spring.datasource.hikari.leak-detection-threshold=60000
+spring.jpa.properties.hibernate.generate_statistics=false
+spring.jpa.properties.hibernate.cache.use_second_level_cache=false
+
+# ========================================
+# Development Tools (Disable in production)
+# ========================================
+spring.devtools.restart.enabled=true
+spring.devtools.livereload.enabled=true
+
+# ========================================
+# Profile-Specific Configuration
+# ========================================
+# Active profile: dev, staging, prod
+spring.profiles.active=dev
