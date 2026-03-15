@@ -1,0 +1,641 @@
+{
+  "info": {
+    "name": "Phase 3 - Online Ordering APIs",
+    "description": "Complete API collection for Phase 3 customer website and online ordering",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. Public Product Catalog",
+      "item": [
+        {
+          "name": "Get All Products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/public/products?tenantId={{tenant_id}}&storeId={{store_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "public", "products"],
+              "query": [
+                {"key": "tenantId", "value": "{{tenant_id}}"},
+                {"key": "storeId", "value": "{{store_id}}"}
+              ]
+            },
+            "description": "Get all products with real-time stock availability"
+          }
+        },
+        {
+          "name": "Get Products by Category",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/public/products?tenantId={{tenant_id}}&storeId={{store_id}}&categoryId=1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "public", "products"],
+              "query": [
+                {"key": "tenantId", "value": "{{tenant_id}}"},
+                {"key": "storeId", "value": "{{store_id}}"},
+                {"key": "categoryId", "value": "1"}
+              ]
+            },
+            "description": "Filter products by category"
+          }
+        },
+        {
+          "name": "Get Product Details",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/public/products/1?tenantId={{tenant_id}}&storeId={{store_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "public", "products", "1"],
+              "query": [
+                {"key": "tenantId", "value": "{{tenant_id}}"},
+                {"key": "storeId", "value": "{{store_id}}"}
+              ]
+            },
+            "description": "Get detailed product information with all variants"
+          }
+        },
+        {
+          "name": "Search Products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/public/products/search?tenantId={{tenant_id}}&storeId={{store_id}}&keyword=Samsung",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "public", "products", "search"],
+              "query": [
+                {"key": "tenantId", "value": "{{tenant_id}}"},
+                {"key": "storeId", "value": "{{store_id}}"},
+                {"key": "keyword", "value": "Samsung"}
+              ]
+            },
+            "description": "Search products by keyword"
+          }
+        },
+        {
+          "name": "Browse by Category",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/public/products/category/1?tenantId={{tenant_id}}&storeId={{store_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "public", "products", "category", "1"],
+              "query": [
+                {"key": "tenantId", "value": "{{tenant_id}}"},
+                {"key": "storeId", "value": "{{store_id}}"}
+              ]
+            },
+            "description": "Get all products in a specific category"
+          }
+        },
+        {
+          "name": "Check Stock Availability",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/public/products/variant/1/availability?tenantId={{tenant_id}}&storeId={{store_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "public", "products", "variant", "1", "availability"],
+              "query": [
+                {"key": "tenantId", "value": "{{tenant_id}}"},
+                {"key": "storeId", "value": "{{store_id}}"}
+              ]
+            },
+            "description": "Check real-time stock availability for a variant"
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Customer Addresses",
+      "item": [
+        {
+          "name": "Add New Address",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": 1,\n  \"addressType\": \"HOME\",\n  \"addressLine1\": \"123 Main Street\",\n  \"addressLine2\": \"Apartment 4B\",\n  \"landmark\": \"Near City Mall\",\n  \"city\": \"Mumbai\",\n  \"state\": \"Maharashtra\",\n  \"postalCode\": \"400001\",\n  \"country\": \"India\",\n  \"phone\": \"9876543210\",\n  \"isDefault\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/customers/addresses",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "customers", "addresses"]
+            },
+            "description": "Add a new delivery address for customer"
+          }
+        },
+        {
+          "name": "Get Customer Addresses",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/customers/addresses/customer/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "customers", "addresses", "customer", "1"]
+            },
+            "description": "Get all addresses for a customer"
+          }
+        },
+        {
+          "name": "Get Address by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/customers/addresses/1?customerId=1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "customers", "addresses", "1"],
+              "query": [{"key": "customerId", "value": "1"}]
+            },
+            "description": "Get a specific address by ID"
+          }
+        },
+        {
+          "name": "Update Address",
+          "request": {
+            "method": "PUT",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"addressLine1\": \"456 New Street\",\n  \"city\": \"Mumbai\",\n  \"state\": \"Maharashtra\",\n  \"postalCode\": \"400002\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/customers/addresses/1?customerId=1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "customers", "addresses", "1"],
+              "query": [{"key": "customerId", "value": "1"}]
+            },
+            "description": "Update an existing address"
+          }
+        },
+        {
+          "name": "Set as Default Address",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/customers/addresses/1/default?customerId=1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "customers", "addresses", "1", "default"],
+              "query": [{"key": "customerId", "value": "1"}]
+            },
+            "description": "Set an address as the default delivery address"
+          }
+        },
+        {
+          "name": "Delete Address",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/customers/addresses/1?customerId=1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "customers", "addresses", "1"],
+              "query": [{"key": "customerId", "value": "1"}]
+            },
+            "description": "Delete a customer address"
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Customer Orders",
+      "item": [
+        {
+          "name": "Place New Order",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tenantId\": {{tenant_id}},\n  \"storeId\": {{store_id}},\n  \"customerId\": 1,\n  \"deliveryAddressId\": 1,\n  \"deliverySlot\": \"9 AM - 12 PM\",\n  \"paymentMethod\": \"COD\",\n  \"items\": [\n    {\n      \"variantId\": 1,\n      \"quantity\": 2\n    },\n    {\n      \"variantId\": 2,\n      \"quantity\": 1\n    }\n  ],\n  \"customerNotes\": \"Please call before delivery\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/orders",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "orders"]
+            },
+            "description": "Customer places a new order (Status: NEW)"
+          }
+        },
+        {
+          "name": "Get Customer Order History",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/orders/customer/1?tenantId={{tenant_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "orders", "customer", "1"],
+              "query": [{"key": "tenantId", "value": "{{tenant_id}}"}]
+            },
+            "description": "Get all orders for a specific customer"
+          }
+        },
+        {
+          "name": "Get Order Details",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/orders/1?tenantId={{tenant_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "orders", "1"],
+              "query": [{"key": "tenantId", "value": "{{tenant_id}}"}]
+            },
+            "description": "Get detailed information about a specific order"
+          }
+        },
+        {
+          "name": "Cancel Order (Customer)",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tenantId\": {{tenant_id}},\n  \"cancelReason\": \"Changed my mind\",\n  \"cancelledBy\": 1\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/orders/1/cancel",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "orders", "1", "cancel"]
+            },
+            "description": "Customer cancels an order (before it's packed)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Admin Order Management",
+      "item": [
+        {
+          "name": "Get All Orders",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{admin_token}}"}],
+            "url": {
+              "raw": "{{base_url}}/api/v1/admin/orders?tenantId={{tenant_id}}&storeId={{store_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "admin", "orders"],
+              "query": [
+                {"key": "tenantId", "value": "{{tenant_id}}"},
+                {"key": "storeId", "value": "{{store_id}}"}
+              ]
+            },
+            "description": "List all orders (admin view)"
+          }
+        },
+        {
+          "name": "Get Orders by Status (NEW)",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{admin_token}}"}],
+            "url": {
+              "raw": "{{base_url}}/api/v1/admin/orders?tenantId={{tenant_id}}&storeId={{store_id}}&status=NEW",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "admin", "orders"],
+              "query": [
+                {"key": "tenantId", "value": "{{tenant_id}}"},
+                {"key": "storeId", "value": "{{store_id}}"},
+                {"key": "status", "value": "NEW"}
+              ]
+            },
+            "description": "Get orders pending acceptance"
+          }
+        },
+        {
+          "name": "Get Order Details (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{admin_token}}"}],
+            "url": {
+              "raw": "{{base_url}}/api/v1/admin/orders/1?tenantId={{tenant_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "admin", "orders", "1"],
+              "query": [{"key": "tenantId", "value": "{{tenant_id}}"}]
+            },
+            "description": "Get detailed order information"
+          }
+        },
+        {
+          "name": "Accept Order (Reserve Stock)",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Authorization", "value": "Bearer {{admin_token}}"}],
+            "url": {
+              "raw": "{{base_url}}/api/v1/admin/orders/1/accept?tenantId={{tenant_id}}&acceptedBy=2",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "admin", "orders", "1", "accept"],
+              "query": [
+                {"key": "tenantId", "value": "{{tenant_id}}"},
+                {"key": "acceptedBy", "value": "2"}
+              ]
+            },
+            "description": "Accept order - THIS RESERVES STOCK to prevent overselling"
+          }
+        },
+        {
+          "name": "Mark as Packed",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Authorization", "value": "Bearer {{admin_token}}"}],
+            "url": {
+              "raw": "{{base_url}}/api/v1/admin/orders/1/pack?tenantId={{tenant_id}}&packedBy=2",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "admin", "orders", "1", "pack"],
+              "query": [
+                {"key": "tenantId", "value": "{{tenant_id}}"},
+                {"key": "packedBy", "value": "2"}
+              ]
+            },
+            "description": "Mark order as packed and ready for delivery"
+          }
+        },
+        {
+          "name": "Mark as Dispatched",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Authorization", "value": "Bearer {{admin_token}}"}],
+            "url": {
+              "raw": "{{base_url}}/api/v1/admin/orders/1/dispatch?tenantId={{tenant_id}}&dispatchedBy=2",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "admin", "orders", "1", "dispatch"],
+              "query": [
+                {"key": "tenantId", "value": "{{tenant_id}}"},
+                {"key": "dispatchedBy", "value": "2"}
+              ]
+            },
+            "description": "Mark order as out for delivery"
+          }
+        },
+        {
+          "name": "Mark as Delivered (Deduct Stock)",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Authorization", "value": "Bearer {{admin_token}}"}],
+            "url": {
+              "raw": "{{base_url}}/api/v1/admin/orders/1/deliver?tenantId={{tenant_id}}&deliveredBy=2",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "admin", "orders", "1", "deliver"],
+              "query": [
+                {"key": "tenantId", "value": "{{tenant_id}}"},
+                {"key": "deliveredBy", "value": "2"}
+              ]
+            },
+            "description": "Mark as delivered - THIS DEDUCTS STOCK from inventory"
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Test Scenarios",
+      "item": [
+        {
+          "name": "Scenario 1: Complete Order Flow",
+          "item": [
+            {
+              "name": "Step 1: Browse Products",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/v1/public/products?tenantId={{tenant_id}}&storeId={{store_id}}",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "v1", "public", "products"],
+                  "query": [
+                    {"key": "tenantId", "value": "{{tenant_id}}"},
+                    {"key": "storeId", "value": "{{store_id}}"}
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Step 2: Check Stock Before Order",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/v1/public/products/variant/1/availability?tenantId={{tenant_id}}&storeId={{store_id}}",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "v1", "public", "products", "variant", "1", "availability"],
+                  "query": [
+                    {"key": "tenantId", "value": "{{tenant_id}}"},
+                    {"key": "storeId", "value": "{{store_id}}"}
+                  ]
+                },
+                "description": "Note the availableStock value"
+              }
+            },
+            {
+              "name": "Step 3: Place Order",
+              "request": {
+                "method": "POST",
+                "header": [{"key": "Content-Type", "value": "application/json"}],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"tenantId\": {{tenant_id}},\n  \"storeId\": {{store_id}},\n  \"customerId\": 1,\n  \"deliveryAddressId\": 1,\n  \"deliverySlot\": \"2 PM - 5 PM\",\n  \"paymentMethod\": \"COD\",\n  \"items\": [\n    {\"variantId\": 1, \"quantity\": 2}\n  ]\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/v1/orders",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "v1", "orders"]
+                },
+                "description": "Order status should be NEW"
+              }
+            },
+            {
+              "name": "Step 4: Check Stock (Still Same)",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/v1/public/products/variant/1/availability?tenantId={{tenant_id}}&storeId={{store_id}}",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "v1", "public", "products", "variant", "1", "availability"],
+                  "query": [
+                    {"key": "tenantId", "value": "{{tenant_id}}"},
+                    {"key": "storeId", "value": "{{store_id}}"}
+                  ]
+                },
+                "description": "Stock should be SAME (not reserved yet)"
+              }
+            },
+            {
+              "name": "Step 5: Admin Accepts Order",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/v1/admin/orders/1/accept?tenantId={{tenant_id}}&acceptedBy=2",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "v1", "admin", "orders", "1", "accept"],
+                  "query": [
+                    {"key": "tenantId", "value": "{{tenant_id}}"},
+                    {"key": "acceptedBy", "value": "2"}
+                  ]
+                },
+                "description": "Stock will be RESERVED now"
+              }
+            },
+            {
+              "name": "Step 6: Check Stock (Reduced)",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/v1/public/products/variant/1/availability?tenantId={{tenant_id}}&storeId={{store_id}}",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "v1", "public", "products", "variant", "1", "availability"],
+                  "query": [
+                    {"key": "tenantId", "value": "{{tenant_id}}"},
+                    {"key": "storeId", "value": "{{store_id}}"}
+                  ]
+                },
+                "description": "availableStock should be REDUCED by 2 (reserved)"
+              }
+            },
+            {
+              "name": "Step 7: Mark as Delivered",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/v1/admin/orders/1/deliver?tenantId={{tenant_id}}&deliveredBy=2",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "v1", "admin", "orders", "1", "deliver"],
+                  "query": [
+                    {"key": "tenantId", "value": "{{tenant_id}}"},
+                    {"key": "deliveredBy", "value": "2"}
+                  ]
+                },
+                "description": "Stock will be DEDUCTED (sold)"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Scenario 2: Order Cancellation",
+          "item": [
+            {
+              "name": "Step 1: Place Order",
+              "request": {
+                "method": "POST",
+                "header": [{"key": "Content-Type", "value": "application/json"}],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"tenantId\": {{tenant_id}},\n  \"storeId\": {{store_id}},\n  \"customerId\": 1,\n  \"deliveryAddressId\": 1,\n  \"paymentMethod\": \"COD\",\n  \"items\": [{\"variantId\": 1, \"quantity\": 3}]\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/v1/orders",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "v1", "orders"]
+                }
+              }
+            },
+            {
+              "name": "Step 2: Admin Accepts (Reserve)",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/v1/admin/orders/2/accept?tenantId={{tenant_id}}&acceptedBy=2",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "v1", "admin", "orders", "2", "accept"],
+                  "query": [
+                    {"key": "tenantId", "value": "{{tenant_id}}"},
+                    {"key": "acceptedBy", "value": "2"}
+                  ]
+                },
+                "description": "3 units reserved"
+              }
+            },
+            {
+              "name": "Step 3: Check Stock (Reserved)",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/v1/public/products/variant/1/availability?tenantId={{tenant_id}}&storeId={{store_id}}",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "v1", "public", "products", "variant", "1", "availability"],
+                  "query": [
+                    {"key": "tenantId", "value": "{{tenant_id}}"},
+                    {"key": "storeId", "value": "{{store_id}}"}
+                  ]
+                },
+                "description": "Should show 3 units reserved"
+              }
+            },
+            {
+              "name": "Step 4: Cancel Order",
+              "request": {
+                "method": "POST",
+                "header": [{"key": "Content-Type", "value": "application/json"}],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"tenantId\": {{tenant_id}},\n  \"cancelReason\": \"Out of stock at warehouse\",\n  \"cancelledBy\": 2\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/v1/orders/2/cancel",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "v1", "orders", "2", "cancel"]
+                },
+                "description": "Reserved stock will be RELEASED"
+              }
+            },
+            {
+              "name": "Step 5: Check Stock (Released)",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/v1/public/products/variant/1/availability?tenantId={{tenant_id}}&storeId={{store_id}}",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "v1", "public", "products", "variant", "1", "availability"],
+                  "query": [
+                    {"key": "tenantId", "value": "{{tenant_id}}"},
+                    {"key": "storeId", "value": "{{store_id}}"}
+                  ]
+                },
+                "description": "Reserved stock should be back to 0 (released)"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "tenant_id",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "store_id",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "admin_token",
+      "value": "your-jwt-token-here",
+      "type": "string"
+    }
+  ]
+}

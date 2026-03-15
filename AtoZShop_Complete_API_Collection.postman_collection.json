@@ -1,0 +1,1344 @@
+{
+	"info": {
+		"name": "AtoZShop - Complete API Collection (Phase 0-2)",
+		"description": "Complete API collection for AtoZShop management system including Authentication, Inventory Management, and POS Billing",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"version": "2.0.0"
+	},
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{jwt_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8080",
+			"type": "string"
+		},
+		{
+			"key": "jwt_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "tenant_id",
+			"value": "1",
+			"type": "string"
+		},
+		{
+			"key": "store_id",
+			"value": "1",
+			"type": "string"
+		},
+		{
+			"key": "user_id",
+			"value": "1",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "Phase 0 - Authentication & Authorization",
+			"item": [
+				{
+					"name": "Register New User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    pm.test(\"User registered successfully\", function () {",
+									"        pm.expect(pm.response.text()).to.include(\"registered successfully\");",
+									"    });",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"user@atozshop.com\",\n  \"password\": \"User@123\",\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"tenantId\": {{tenant_id}}\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/auth/register",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "auth", "register"]
+						},
+						"description": "Register a new user with email, password, and tenant association"
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.environment.set(\"jwt_token\", jsonData.token);",
+									"    pm.collectionVariables.set(\"jwt_token\", jsonData.token);",
+									"    pm.test(\"JWT token received\", function () {",
+									"        pm.expect(jsonData.token).to.be.a('string');",
+									"    });",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"user@atozshop.com\",\n  \"password\": \"User@123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/auth/login",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "auth", "login"]
+						},
+						"description": "Login and receive JWT token (automatically saved to collection variable)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Home (Test Auth)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/home",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "home"]
+						},
+						"description": "Test endpoint to verify JWT authentication"
+					},
+					"response": []
+				}
+			],
+			"description": "User authentication and authorization APIs"
+		},
+		{
+			"name": "Phase 1 - Category Management",
+			"item": [
+				{
+					"name": "Create Category",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"tenantId\": {{tenant_id}},\n  \"name\": \"Electronics\",\n  \"description\": \"Electronic items and gadgets\",\n  \"slug\": \"electronics\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/categories",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "categories"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Categories",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/categories?tenantId={{tenant_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "categories"],
+							"query": [
+								{
+									"key": "tenantId",
+									"value": "{{tenant_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Category by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/categories/1?tenantId={{tenant_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "categories", "1"],
+							"query": [
+								{
+									"key": "tenantId",
+									"value": "{{tenant_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Category",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Electronics & Gadgets\",\n  \"description\": \"Updated description\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/categories/1?tenantId={{tenant_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "categories", "1"],
+							"query": [
+								{
+									"key": "tenantId",
+									"value": "{{tenant_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Category",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/categories/1?tenantId={{tenant_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "categories", "1"],
+							"query": [
+								{
+									"key": "tenantId",
+									"value": "{{tenant_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Phase 1 - Product Management",
+			"item": [
+				{
+					"name": "Create Product",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"tenantId\": {{tenant_id}},\n  \"categoryId\": 1,\n  \"name\": \"Samsung Galaxy S23\",\n  \"slug\": \"samsung-galaxy-s23\",\n  \"description\": \"Latest Samsung flagship smartphone\",\n  \"brand\": \"Samsung\",\n  \"images\": [\n    \"https://example.com/image1.jpg\"\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/products",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "products"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Products",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/products?tenantId={{tenant_id}}&page=0&size=20",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "products"],
+							"query": [
+								{
+									"key": "tenantId",
+									"value": "{{tenant_id}}"
+								},
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "20"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Product by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/products/1?tenantId={{tenant_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "products", "1"],
+							"query": [
+								{
+									"key": "tenantId",
+									"value": "{{tenant_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search Products by Category",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/products/category/1?tenantId={{tenant_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "products", "category", "1"],
+							"query": [
+								{
+									"key": "tenantId",
+									"value": "{{tenant_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Product",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Samsung Galaxy S23 Ultra\",\n  \"description\": \"Updated flagship model\",\n  \"brand\": \"Samsung\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/products/1?tenantId={{tenant_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "products", "1"],
+							"query": [
+								{
+									"key": "tenantId",
+									"value": "{{tenant_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Phase 1 - Product Variant Management",
+			"item": [
+				{
+					"name": "Create Product Variant",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"tenantId\": {{tenant_id}},\n  \"productId\": 1,\n  \"storeId\": {{store_id}},\n  \"variantName\": \"128GB Black\",\n  \"sku\": \"SGS23-128-BLK\",\n  \"unit\": \"PCS\",\n  \"barcodeValue\": \"8801234567890\",\n  \"costPrice\": 45000,\n  \"sellingPrice\": 55000,\n  \"mrp\": 59999,\n  \"minStockThreshold\": 5\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/variants",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "variants"]
+						},
+						"description": "Create a product variant with pricing and barcode"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Variant by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/variants/1?tenantId={{tenant_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "variants", "1"],
+							"query": [
+								{
+									"key": "tenantId",
+									"value": "{{tenant_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Variant by Barcode",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/variants/barcode/8801234567890?tenantId={{tenant_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "variants", "barcode", "8801234567890"],
+							"query": [
+								{
+									"key": "tenantId",
+									"value": "{{tenant_id}}"
+								}
+							]
+						},
+						"description": "Scan barcode to get variant details - used in POS"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Variant",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"variantName\": \"256GB Black\",\n  \"sellingPrice\": 65000,\n  \"mrp\": 69999\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/variants/1?tenantId={{tenant_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "variants", "1"],
+							"query": [
+								{
+									"key": "tenantId",
+									"value": "{{tenant_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Phase 1 - Stock Management (Event Sourcing)",
+			"item": [
+				{
+					"name": "Record Incoming Stock (Purchase)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"tenantId\": {{tenant_id}},\n  \"storeId\": {{store_id}},\n  \"supplierId\": 1,\n  \"receivedDate\": \"2026-02-28\",\n  \"invoiceNumber\": \"INV-2026-001\",\n  \"items\": [\n    {\n      \"variantId\": 1,\n      \"quantity\": 50,\n      \"costPrice\": 45000,\n      \"sellingPrice\": 55000\n    }\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/stock/incoming",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "stock", "incoming"]
+						},
+						"description": "Record stock purchase - creates PURCHASE entries in stock ledger"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Stock Ledger for Variant",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/stock/ledger/variant/1?tenantId={{tenant_id}}&storeId={{store_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "stock", "ledger", "variant", "1"],
+							"query": [
+								{
+									"key": "tenantId",
+									"value": "{{tenant_id}}"
+								},
+								{
+									"key": "storeId",
+									"value": "{{store_id}}"
+								}
+							]
+						},
+						"description": "View complete event-sourced history for a variant"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Low Stock Alerts",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/stock/low-stock?tenantId={{tenant_id}}&storeId={{store_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "stock", "low-stock"],
+							"query": [
+								{
+									"key": "tenantId",
+									"value": "{{tenant_id}}"
+								},
+								{
+									"key": "storeId",
+									"value": "{{store_id}}"
+								}
+							]
+						},
+						"description": "Get products below minimum stock threshold"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Phase 2 - Customer Management",
+			"item": [
+				{
+					"name": "Create Customer",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"tenantId\": {{tenant_id}},\n  \"name\": \"John Doe\",\n  \"phone\": \"9876543210\",\n  \"email\": \"john.doe@example.com\",\n  \"address\": \"123 Main Street\",\n  \"city\": \"Mumbai\",\n  \"state\": \"Maharashtra\",\n  \"postalCode\": \"400001\",\n  \"gstin\": \"27AABCU9603R1ZM\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/customers",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "customers"]
+						},
+						"description": "Create customer with auto-generated customer code"
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Customers",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/customers?tenantId={{tenant_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "customers"],
+							"query": [
+								{
+									"key": "tenantId",
+									"value": "{{tenant_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search Customers",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/customers/search?keyword=John&tenantId={{tenant_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "customers", "search"],
+							"query": [
+								{
+									"key": "keyword",
+									"value": "John"
+								},
+								{
+									"key": "tenantId",
+									"value": "{{tenant_id}}"
+								}
+							]
+						},
+						"description": "Search by name or phone"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Customer by Phone",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/customers/phone/9876543210?tenantId={{tenant_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "customers", "phone", "9876543210"],
+							"query": [
+								{
+									"key": "tenantId",
+									"value": "{{tenant_id}}"
+								}
+							]
+						},
+						"description": "Quick lookup by phone number"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Customer Purchase History",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/customers/1/purchase-history?tenantId={{tenant_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "customers", "1", "purchase-history"],
+							"query": [
+								{
+									"key": "tenantId",
+									"value": "{{tenant_id}}"
+								}
+							]
+						},
+						"description": "Get customer's purchase history and statistics"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Customer",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"John M. Doe\",\n  \"email\": \"john.m.doe@example.com\",\n  \"address\": \"456 New Address\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/customers/1?tenantId={{tenant_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "customers", "1"],
+							"query": [
+								{
+									"key": "tenantId",
+									"value": "{{tenant_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Customer (Soft)",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/customers/1?tenantId={{tenant_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "customers", "1"],
+							"query": [
+								{
+									"key": "tenantId",
+									"value": "{{tenant_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Phase 2 - POS Billing",
+			"item": [
+				{
+					"name": "Create Bill (DRAFT)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"tenantId\": {{tenant_id}},\n  \"storeId\": {{store_id}},\n  \"customerId\": 1,\n  \"billType\": \"SALES\",\n  \"cashierId\": {{user_id}},\n  \"items\": [\n    {\n      \"variantId\": 1,\n      \"quantity\": 2\n    },\n    {\n      \"variantId\": 2,\n      \"quantity\": 1\n    }\n  ],\n  \"notes\": \"First sale via POS\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/bills",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "bills"]
+						},
+						"description": "Create bill in DRAFT status - items can be modified"
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Bills",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/bills?tenantId={{tenant_id}}&storeId={{store_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "bills"],
+							"query": [
+								{
+									"key": "tenantId",
+									"value": "{{tenant_id}}"
+								},
+								{
+									"key": "storeId",
+									"value": "{{store_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Bill by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/bills/1?tenantId={{tenant_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "bills", "1"],
+							"query": [
+								{
+									"key": "tenantId",
+									"value": "{{tenant_id}}"
+								}
+							]
+						},
+						"description": "Get complete bill details with items, payments, discounts"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Bill by Number",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/bills/number/BIL-20260228-001?tenantId={{tenant_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "bills", "number", "BIL-20260228-001"],
+							"query": [
+								{
+									"key": "tenantId",
+									"value": "{{tenant_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Item to Bill",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"variantId\": 3,\n  \"quantity\": 1\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/bills/1/items?tenantId={{tenant_id}}&storeId={{store_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "bills", "1", "items"],
+							"query": [
+								{
+									"key": "tenantId",
+									"value": "{{tenant_id}}"
+								},
+								{
+									"key": "storeId",
+									"value": "{{store_id}}"
+								}
+							]
+						},
+						"description": "Add new item to DRAFT bill"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Bill Item",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"quantity\": 3\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/bills/1/items/1?tenantId={{tenant_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "bills", "1", "items", "1"],
+							"query": [
+								{
+									"key": "tenantId",
+									"value": "{{tenant_id}}"
+								}
+							]
+						},
+						"description": "Update quantity or discount for bill item"
+					},
+					"response": []
+				},
+				{
+					"name": "Remove Item from Bill",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/bills/1/items/1?tenantId={{tenant_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "bills", "1", "items", "1"],
+							"query": [
+								{
+									"key": "tenantId",
+									"value": "{{tenant_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Confirm Bill (Deduct Stock) ⚡",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/bills/1/confirm?tenantId={{tenant_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "bills", "1", "confirm"],
+							"query": [
+								{
+									"key": "tenantId",
+									"value": "{{tenant_id}}"
+								}
+							]
+						},
+						"description": "CRITICAL: Confirms bill, validates stock, and automatically deducts stock via Phase 1 ledger (creates SALE transactions)"
+					},
+					"response": []
+				},
+				{
+					"name": "Cancel Bill",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/bills/1/cancel?tenantId={{tenant_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "bills", "1", "cancel"],
+							"query": [
+								{
+									"key": "tenantId",
+									"value": "{{tenant_id}}"
+								}
+							]
+						},
+						"description": "Cancel DRAFT bill only"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Phase 2 - Payment Processing",
+			"item": [
+				{
+					"name": "Process Payment (Cash)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"billId\": 1,\n  \"tenantId\": {{tenant_id}},\n  \"paymentMethod\": \"CASH\",\n  \"amount\": 30000,\n  \"createdBy\": {{user_id}}\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/payments",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "payments"]
+						},
+						"description": "Record cash payment"
+					},
+					"response": []
+				},
+				{
+					"name": "Process Payment (Card)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"billId\": 1,\n  \"tenantId\": {{tenant_id}},\n  \"paymentMethod\": \"CARD\",\n  \"amount\": 25000,\n  \"referenceNumber\": \"TXN123456789\",\n  \"cardLast4\": \"1234\",\n  \"bankName\": \"HDFC Bank\",\n  \"createdBy\": {{user_id}}\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/payments",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "payments"]
+						},
+						"description": "Record card payment with transaction details"
+					},
+					"response": []
+				},
+				{
+					"name": "Process Payment (UPI)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"billId\": 1,\n  \"tenantId\": {{tenant_id}},\n  \"paymentMethod\": \"UPI\",\n  \"amount\": 55000,\n  \"referenceNumber\": \"UPI123456789\",\n  \"upiId\": \"customer@paytm\",\n  \"createdBy\": {{user_id}}\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/payments",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "payments"]
+						},
+						"description": "Record UPI payment"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Payments by Bill",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/payments/bill/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "payments", "bill", "1"]
+						},
+						"description": "View all payments for a bill (split payments)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Payments by Date Range",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/payments/range?tenantId={{tenant_id}}&from=2026-02-01T00:00:00&to=2026-02-28T23:59:59",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "payments", "range"],
+							"query": [
+								{
+									"key": "tenantId",
+									"value": "{{tenant_id}}"
+								},
+								{
+									"key": "from",
+									"value": "2026-02-01T00:00:00"
+								},
+								{
+									"key": "to",
+									"value": "2026-02-28T23:59:59"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Phase 2 - Discount Management",
+			"item": [
+				{
+					"name": "Create Discount",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"tenantId\": {{tenant_id}},\n  \"discountCode\": \"WELCOME10\",\n  \"name\": \"Welcome Discount 10%\",\n  \"description\": \"First purchase discount\",\n  \"discountType\": \"PERCENTAGE\",\n  \"discountValue\": 10,\n  \"minPurchaseAmount\": 1000,\n  \"maxDiscountAmount\": 5000,\n  \"applicableOn\": \"BILL\",\n  \"validFrom\": \"2026-02-01\",\n  \"validTo\": \"2026-03-31\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/discounts",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "discounts"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Active Discounts",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/discounts/active?tenantId={{tenant_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "discounts", "active"],
+							"query": [
+								{
+									"key": "tenantId",
+									"value": "{{tenant_id}}"
+								}
+							]
+						},
+						"description": "Get currently valid discounts"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Discount by Code",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/discounts/code/WELCOME10?tenantId={{tenant_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "discounts", "code", "WELCOME10"],
+							"query": [
+								{
+									"key": "tenantId",
+									"value": "{{tenant_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Discount",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"discountValue\": 15,\n  \"validTo\": \"2026-04-30\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/discounts/1?tenantId={{tenant_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "discounts", "1"],
+							"query": [
+								{
+									"key": "tenantId",
+									"value": "{{tenant_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Discount (Soft)",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/discounts/1?tenantId={{tenant_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "discounts", "1"],
+							"query": [
+								{
+									"key": "tenantId",
+									"value": "{{tenant_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Phase 2 - Sales Reports",
+			"item": [
+				{
+					"name": "Daily Sales Report",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/reports/daily-sales?tenantId={{tenant_id}}&storeId={{store_id}}&date=2026-02-28",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "reports", "daily-sales"],
+							"query": [
+								{
+									"key": "tenantId",
+									"value": "{{tenant_id}}"
+								},
+								{
+									"key": "storeId",
+									"value": "{{store_id}}"
+								},
+								{
+									"key": "date",
+									"value": "2026-02-28"
+								}
+							]
+						},
+						"description": "Get daily sales summary with payment method breakdown"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Complete POS Transaction Flow",
+			"item": [
+				{
+					"name": "1. Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"pm.collectionVariables.set(\"jwt_token\", jsonData.token);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"user@atozshop.com\",\n  \"password\": \"User@123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/auth/login",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "auth", "login"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "2. Find/Create Customer",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/customers/phone/9876543210?tenantId={{tenant_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "customers", "phone", "9876543210"],
+							"query": [
+								{
+									"key": "tenantId",
+									"value": "{{tenant_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "3. Scan Product Barcode",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/variants/barcode/8801234567890?tenantId={{tenant_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "variants", "barcode", "8801234567890"],
+							"query": [
+								{
+									"key": "tenantId",
+									"value": "{{tenant_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "4. Create Bill",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"tenantId\": {{tenant_id}},\n  \"storeId\": {{store_id}},\n  \"customerId\": 1,\n  \"billType\": \"SALES\",\n  \"cashierId\": {{user_id}},\n  \"items\": [\n    {\n      \"variantId\": 1,\n      \"quantity\": 2\n    }\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/bills",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "bills"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "5. Confirm Bill (Stock Deduct)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/bills/1/confirm?tenantId={{tenant_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "bills", "1", "confirm"],
+							"query": [
+								{
+									"key": "tenantId",
+									"value": "{{tenant_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "6. Process Payment",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"billId\": 1,\n  \"tenantId\": {{tenant_id}},\n  \"paymentMethod\": \"CASH\",\n  \"amount\": 110000,\n  \"createdBy\": {{user_id}}\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/payments",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "payments"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "7. Verify Stock Ledger",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/stock/ledger/variant/1?tenantId={{tenant_id}}&storeId={{store_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "stock", "ledger", "variant", "1"],
+							"query": [
+								{
+									"key": "tenantId",
+									"value": "{{tenant_id}}"
+								},
+								{
+									"key": "storeId",
+									"value": "{{store_id}}"
+								}
+							]
+						},
+						"description": "Verify SALE transaction created"
+					},
+					"response": []
+				}
+			],
+			"description": "Complete end-to-end POS transaction workflow"
+		}
+	]
+}

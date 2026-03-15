@@ -34,6 +34,9 @@ public class User extends BaseEntity {
     @Column(name = "store_id")
     private Long storeId;
 
+    @Column(name = "customer_id")
+    private Long customerId;
+
     @Column(length = 100)
     private String username;
 

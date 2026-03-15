@@ -1,0 +1,963 @@
+{
+	"info": {
+		"_postman_id": "atozshop-api-v1",
+		"name": "A to Z Shop Management - Complete API Collection",
+		"description": "Complete API collection for Phase 0 (Authentication) and Phase 1 (Inventory Management)\n\n## How to Use:\n1. Import this file into Postman\n2. Set up environment variables (or use the examples)\n3. Start with 'Auth - Register' to create a user\n4. Then 'Auth - Login' to get JWT token (automatically saved to {{token}})\n5. Test other endpoints (they use {{token}} automatically)\n\n## Environment Variables:\n- baseUrl: http://localhost:8080\n- token: (auto-set after login)\n- tenantId: 1\n- storeId: 1\n- categoryId: (set after creating category)\n- productId: (set after creating product)\n- variantId: (set after creating variant)\n- transactionId: (set after creating transaction)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Register User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"    if (jsonData.token) {",
+									"        pm.environment.set('token', jsonData.token);",
+									"        pm.environment.set('tenantId', jsonData.tenantId);",
+									"        console.log('Token saved:', jsonData.token);",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"tenantId\": 1,\n  \"storeId\": 1,\n  \"email\": \"demo@atozshop.com\",\n  \"password\": \"Demo@1234\",\n  \"username\": \"demouser\",\n  \"firstName\": \"Demo\",\n  \"lastName\": \"User\",\n  \"phone\": \"9876543210\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/auth/register",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "auth", "register"]
+						},
+						"description": "Register a new user. Note: You need an existing tenant and store. Use tenantId=1 and storeId=1 for testing."
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.environment.set('token', jsonData.token);",
+									"    pm.environment.set('tenantId', jsonData.tenantId);",
+									"    console.log('Token saved:', jsonData.token);",
+									"    console.log('Tenant ID:', jsonData.tenantId);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"demo@atozshop.com\",\n  \"password\": \"Demo@1234\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/auth/login",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "auth", "login"]
+						},
+						"description": "Login and get JWT token. Token is automatically saved to environment variable."
+					},
+					"response": []
+				},
+				{
+					"name": "Home (Test Auth)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/home",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "home"]
+						},
+						"description": "Test endpoint to verify authentication is working."
+					},
+					"response": []
+				}
+			],
+			"description": "Phase 0 - Authentication APIs"
+		},
+		{
+			"name": "Category Management",
+			"item": [
+				{
+					"name": "Create Category",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.environment.set('categoryId', jsonData.id);",
+									"    console.log('Category ID saved:', jsonData.id);",
+									"    console.log('Category Slug:', jsonData.slug);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"tenantId\": {{tenantId}},\n  \"name\": \"Electronics\",\n  \"description\": \"Electronic items and gadgets\",\n  \"sortOrder\": 1,\n  \"isActive\": true\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/categories",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "categories"]
+						},
+						"description": "Create a new category. Slug is auto-generated from name."
+					},
+					"response": []
+				},
+				{
+					"name": "Create Subcategory",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"tenantId\": {{tenantId}},\n  \"parentId\": {{categoryId}},\n  \"name\": \"Mobile Phones\",\n  \"description\": \"Smartphones and feature phones\",\n  \"sortOrder\": 1,\n  \"isActive\": true\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/categories",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "categories"]
+						},
+						"description": "Create a subcategory under parent category."
+					},
+					"response": []
+				},
+				{
+					"name": "List All Categories",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/categories?tenantId={{tenantId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "categories"],
+							"query": [
+								{
+									"key": "tenantId",
+									"value": "{{tenantId}}"
+								}
+							]
+						},
+						"description": "Get all categories for the tenant."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Category by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/categories/{{categoryId}}?tenantId={{tenantId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "categories", "{{categoryId}}"],
+							"query": [
+								{
+									"key": "tenantId",
+									"value": "{{tenantId}}"
+								}
+							]
+						},
+						"description": "Get category details by ID."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Subcategories",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/categories/{{categoryId}}/subcategories?tenantId={{tenantId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "categories", "{{categoryId}}", "subcategories"],
+							"query": [
+								{
+									"key": "tenantId",
+									"value": "{{tenantId}}"
+								}
+							]
+						},
+						"description": "Get all child categories of a parent category."
+					},
+					"response": []
+				},
+				{
+					"name": "Update Category",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"tenantId\": {{tenantId}},\n  \"name\": \"Electronics & Gadgets\",\n  \"description\": \"All electronic items, gadgets, and accessories\",\n  \"sortOrder\": 1,\n  \"isActive\": true\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/categories/{{categoryId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "categories", "{{categoryId}}"]
+						},
+						"description": "Update category details. Slug will be regenerated if name changes."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Category",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/categories/{{categoryId}}?tenantId={{tenantId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "categories", "{{categoryId}}"],
+							"query": [
+								{
+									"key": "tenantId",
+									"value": "{{tenantId}}"
+								}
+							]
+						},
+						"description": "Delete a category (soft delete)."
+					},
+					"response": []
+				}
+			],
+			"description": "Phase 1 - Category Management APIs"
+		},
+		{
+			"name": "Product Management",
+			"item": [
+				{
+					"name": "Create Product",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.environment.set('productId', jsonData.id);",
+									"    console.log('Product ID saved:', jsonData.id);",
+									"    console.log('Product Slug:', jsonData.slug);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"tenantId\": {{tenantId}},\n  \"categoryId\": {{categoryId}},\n  \"name\": \"iPhone 15 Pro\",\n  \"brand\": \"Apple\",\n  \"description\": \"Latest flagship iPhone with A17 Pro chip and titanium design\",\n  \"isActive\": true\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/products",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "products"]
+						},
+						"description": "Create a new product. Slug is auto-generated from name."
+					},
+					"response": []
+				},
+				{
+					"name": "List All Products",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/products?tenantId={{tenantId}}&page=0&size=20",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "products"],
+							"query": [
+								{
+									"key": "tenantId",
+									"value": "{{tenantId}}"
+								},
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "20"
+								}
+							]
+						},
+						"description": "Get all products with pagination."
+					},
+					"response": []
+				},
+				{
+					"name": "Search Products",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/products/search?keyword=iPhone&tenantId={{tenantId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "products", "search"],
+							"query": [
+								{
+									"key": "keyword",
+									"value": "iPhone"
+								},
+								{
+									"key": "tenantId",
+									"value": "{{tenantId}}"
+								}
+							]
+						},
+						"description": "Search products by keyword in name, description, or brand."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Product by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/products/{{productId}}?tenantId={{tenantId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "products", "{{productId}}"],
+							"query": [
+								{
+									"key": "tenantId",
+									"value": "{{tenantId}}"
+								}
+							]
+						},
+						"description": "Get product details by ID."
+					},
+					"response": []
+				},
+				{
+					"name": "Update Product",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"tenantId\": {{tenantId}},\n  \"categoryId\": {{categoryId}},\n  \"name\": \"iPhone 15 Pro Max\",\n  \"brand\": \"Apple\",\n  \"description\": \"Largest iPhone with best camera system and longest battery life\",\n  \"isActive\": true\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/products/{{productId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "products", "{{productId}}"]
+						},
+						"description": "Update product details."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Product",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/products/{{productId}}?tenantId={{tenantId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "products", "{{productId}}"],
+							"query": [
+								{
+									"key": "tenantId",
+									"value": "{{tenantId}}"
+								}
+							]
+						},
+						"description": "Delete a product (soft delete)."
+					},
+					"response": []
+				}
+			],
+			"description": "Phase 1 - Product Management APIs"
+		},
+		{
+			"name": "Product Variants",
+			"item": [
+				{
+					"name": "Create Variant",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.environment.set('variantId', jsonData.id);",
+									"    console.log('Variant ID saved:', jsonData.id);",
+									"    console.log('SKU:', jsonData.sku);",
+									"    console.log('Barcode:', jsonData.barcodeValue);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"tenantId\": {{tenantId}},\n  \"productId\": {{productId}},\n  \"sku\": \"IPH15P-TIT-256\",\n  \"variantName\": \"Natural Titanium 256GB\",\n  \"unit\": \"piece\",\n  \"barcodeValue\": \"0194253484981\",\n  \"qrValue\": \"IPH15P-TIT-256\",\n  \"costPrice\": 115000,\n  \"sellingPrice\": 134900,\n  \"mrp\": 134900,\n  \"minStockThreshold\": 3,\n  \"maxStockThreshold\": 20,\n  \"isActive\": true\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/variants",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "variants"]
+						},
+						"description": "Create a product variant with barcode. Initial price will be created automatically."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Variant by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/variants/{{variantId}}?tenantId={{tenantId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "variants", "{{variantId}}"],
+							"query": [
+								{
+									"key": "tenantId",
+									"value": "{{tenantId}}"
+								}
+							]
+						},
+						"description": "Get variant details including current stock level."
+					},
+					"response": []
+				},
+				{
+					"name": "Lookup by SKU",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/variants/sku/IPH15P-TIT-256?tenantId={{tenantId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "variants", "sku", "IPH15P-TIT-256"],
+							"query": [
+								{
+									"key": "tenantId",
+									"value": "{{tenantId}}"
+								}
+							]
+						},
+						"description": "Find variant by SKU code."
+					},
+					"response": []
+				},
+				{
+					"name": "Barcode Scan Lookup",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/variants/barcode/0194253484981?tenantId={{tenantId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "variants", "barcode", "0194253484981"],
+							"query": [
+								{
+									"key": "tenantId",
+									"value": "{{tenantId}}"
+								}
+							]
+						},
+						"description": "⭐ Barcode scanner integration - Find variant by barcode value."
+					},
+					"response": []
+				},
+				{
+					"name": "Update Variant",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"tenantId\": {{tenantId}},\n  \"productId\": {{productId}},\n  \"sku\": \"IPH15P-TIT-256\",\n  \"variantName\": \"Natural Titanium 256GB\",\n  \"unit\": \"piece\",\n  \"barcodeValue\": \"0194253484981\",\n  \"costPrice\": 112000,\n  \"sellingPrice\": 134900,\n  \"mrp\": 134900,\n  \"minStockThreshold\": 5,\n  \"maxStockThreshold\": 25,\n  \"isActive\": true\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/variants/{{variantId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "variants", "{{variantId}}"]
+						},
+						"description": "Update variant details and pricing."
+					},
+					"response": []
+				},
+				{
+					"name": "Low Stock Alerts",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/variants/low-stock?tenantId={{tenantId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "variants", "low-stock"],
+							"query": [
+								{
+									"key": "tenantId",
+									"value": "{{tenantId}}"
+								}
+							]
+						},
+						"description": "⭐ Get all variants with stock below minimum threshold."
+					},
+					"response": []
+				}
+			],
+			"description": "Phase 1 - Product Variant APIs with Barcode Support"
+		},
+		{
+			"name": "Stock Management",
+			"item": [
+				{
+					"name": "Create Incoming Stock",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.environment.set('transactionId', jsonData.id);",
+									"    console.log('Transaction ID saved:', jsonData.id);",
+									"    console.log('Transaction Number:', jsonData.transactionNumber);",
+									"    console.log('Total Cost:', jsonData.totalCost);",
+									"    console.log('Expected Profit:', jsonData.expectedProfit);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"tenantId\": {{tenantId}},\n  \"storeId\": {{storeId}},\n  \"supplierName\": \"Apple Authorized Distributor\",\n  \"items\": [\n    {\n      \"variantId\": {{variantId}},\n      \"quantity\": 10,\n      \"costPrice\": 115000,\n      \"sellingPrice\": 134900,\n      \"remarks\": \"First batch arrival\"\n    }\n  ],\n  \"notes\": \"Stock received in good condition\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/stock/incoming",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "stock", "incoming"]
+						},
+						"description": "⭐ Create incoming stock transaction (DRAFT status). Automatically calculates profit: (sellingPrice - costPrice) × quantity"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Transaction by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/stock/incoming/{{transactionId}}?tenantId={{tenantId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "stock", "incoming", "{{transactionId}}"],
+							"query": [
+								{
+									"key": "tenantId",
+									"value": "{{tenantId}}"
+								}
+							]
+						},
+						"description": "Get stock transaction details with all line items."
+					},
+					"response": []
+				},
+				{
+					"name": "List All Transactions",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/stock/incoming?tenantId={{tenantId}}&page=0&size=20",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "stock", "incoming"],
+							"query": [
+								{
+									"key": "tenantId",
+									"value": "{{tenantId}}"
+								},
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "20"
+								}
+							]
+						},
+						"description": "Get all stock transactions with pagination."
+					},
+					"response": []
+				},
+				{
+					"name": "Confirm Transaction",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/stock/incoming/{{transactionId}}/confirm?tenantId={{tenantId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "stock", "incoming", "{{transactionId}}", "confirm"],
+							"query": [
+								{
+									"key": "tenantId",
+									"value": "{{tenantId}}"
+								}
+							]
+						},
+						"description": "⭐ Confirm transaction and create stock ledger entries. Changes status from DRAFT to CONFIRMED. This is when inventory levels are actually updated."
+					},
+					"response": []
+				},
+				{
+					"name": "Cancel Transaction",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/stock/incoming/{{transactionId}}/cancel?tenantId={{tenantId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "stock", "incoming", "{{transactionId}}", "cancel"],
+							"query": [
+								{
+									"key": "tenantId",
+									"value": "{{tenantId}}"
+								}
+							]
+						},
+						"description": "Cancel a draft transaction. Only DRAFT transactions can be cancelled."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Variant Ledger History",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/stock/ledger/variant/{{variantId}}?tenantId={{tenantId}}&storeId={{storeId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "stock", "ledger", "variant", "{{variantId}}"],
+							"query": [
+								{
+									"key": "tenantId",
+									"value": "{{tenantId}}"
+								},
+								{
+									"key": "storeId",
+									"value": "{{storeId}}"
+								}
+							]
+						},
+						"description": "⭐ Get complete stock movement history for a variant (event sourcing ledger). Shows all INCOMING, SALE, RETURN, ADJUSTMENT transactions."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Current Stock Levels",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/stock/levels?tenantId={{tenantId}}&storeId={{storeId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "stock", "levels"],
+							"query": [
+								{
+									"key": "tenantId",
+									"value": "{{tenantId}}"
+								},
+								{
+									"key": "storeId",
+									"value": "{{storeId}}"
+								}
+							]
+						},
+						"description": "⭐ Get current stock levels for all variants in a store. Stock is calculated from SUM(quantity_change) in ledger (event sourcing)."
+					},
+					"response": []
+				}
+			],
+			"description": "Phase 1 - Stock Management with Event Sourcing"
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "tenantId",
+			"value": "1",
+			"type": "string"
+		},
+		{
+			"key": "storeId",
+			"value": "1",
+			"type": "string"
+		},
+		{
+			"key": "categoryId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "productId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "variantId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "transactionId",
+			"value": "",
+			"type": "string"
+		}
+	]
+}

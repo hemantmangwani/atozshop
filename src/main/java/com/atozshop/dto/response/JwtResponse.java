@@ -25,4 +25,5 @@ public class JwtResponse {
     private String fullName;
     private Long tenantId;
     private List<String> roles;
+    private Long customerId; // Customer ID for online orders (if user is a customer)
 }

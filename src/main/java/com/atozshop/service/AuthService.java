@@ -7,6 +7,7 @@ import com.atozshop.dto.response.MessageResponse;
 import com.atozshop.entity.Role;
 import com.atozshop.entity.User;
 import com.atozshop.exception.BadRequestException;
+import com.atozshop.repository.CustomerRepository;
 import com.atozshop.repository.RoleRepository;
 import com.atozshop.repository.UserRepository;
 import com.atozshop.security.JwtTokenProvider;
@@ -35,6 +36,7 @@ public class AuthService {
 
     private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
+    private final CustomerRepository customerRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider tokenProvider;
@@ -64,6 +66,14 @@ public class AuthService {
         user.setLastLoginAt(java.time.LocalDateTime.now());
         userRepository.save(user);
 
+        // Try to find associated customer record by email for online ordering
+        Long customerId = null;
+        if (user.getEmail() != null) {
+            customerId = customerRepository.findByEmailAndTenantId(user.getEmail(), user.getTenantId())
+                .map(customer -> customer.getId())
+                .orElse(null);
+        }
+
         return JwtResponse.builder()
             .token(jwt)
             .type("Bearer")
@@ -73,6 +83,7 @@ public class AuthService {
             .fullName(user.getFullName())
             .tenantId(userPrincipal.getTenantId())
             .roles(roles)
+            .customerId(customerId)
             .build();
     }
 

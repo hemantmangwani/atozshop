@@ -20,8 +20,12 @@ public class UserPrincipal implements UserDetails {
 
     private Long id;
     private Long tenantId;
+    private Long storeId;
+    private Long customerId;
     private String email;
     private String username;
+    private String phone;
+    private String fullName;
     private String password;
     private Collection<? extends GrantedAuthority> authorities;
     private boolean isActive;
@@ -37,12 +41,39 @@ public class UserPrincipal implements UserDetails {
         return new UserPrincipal(
             user.getId(),
             user.getTenantId(),
+            user.getStoreId(), // Added storeId
+            user.getCustomerId(), // Added customerId
             user.getEmail(),
             user.getUsername(),
+            user.getPhone(), // Added phone
+            user.getFullName(), // Added fullName
             user.getPasswordHash(),
             authorities,
             user.getIsActive()
         );
+    }
+
+    /**
+     * Check if user has ADMIN role
+     */
+    public boolean isAdmin() {
+        return authorities != null && authorities.stream()
+            .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
+    }
+
+    /**
+     * Check if user has CUSTOMER role
+     */
+    public boolean isCustomer() {
+        return authorities != null && authorities.stream()
+            .anyMatch(auth -> auth.getAuthority().equals("ROLE_CUSTOMER"));
+    }
+
+    /**
+     * Get store ID with fallback to default (1)
+     */
+    public Long getStoreIdOrDefault() {
+        return storeId != null ? storeId : 1L;
     }
 
     @Override

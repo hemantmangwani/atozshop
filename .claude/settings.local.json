@@ -1,7 +1,39 @@
 {
   "permissions": {
     "allow": [
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(find:*)",
+      "Bash(java:*)",
+      "Bash(mvn:*)",
+      "Bash(/usr/libexec/java_home:*)",
+      "Bash(curl:*)",
+      "Bash(export JAVA_HOME=/Users/hemant.mangwani/Library/Java/JavaVirtualMachines/corretto-21.0.8/Contents/Home)",
+      "Bash(pkill:*)",
+      "Bash(python3:*)",
+      "Bash(mysql:*)",
+      "Bash(docker ps:*)",
+      "Bash(ls:*)",
+      "Bash(psql:*)",
+      "Bash(chmod:*)",
+      "Bash(./test_phase2_pos.sh:*)",
+      "Bash(lsof:*)",
+      "Bash(./test_phase2_final.sh:*)",
+      "Bash(npm run build:*)",
+      "Bash(git checkout:*)",
+      "Bash(npm install:*)",
+      "Bash(npm run dev:*)",
+      "Bash(npx tsc:*)",
+      "Bash(cd /Users/hemant.mangwani/gitproject/20jan/atozshop/atozshop-frontend/src/pages -type f -name \"*.tsx\")",
+      "Bash(xargs kill -9)",
+      "Bash(ps:*)",
+      "Bash(./mvnw spring-boot:run:*)",
+      "Bash(echo:*)",
+      "Bash(/tmp/comprehensive_api_test.sh:*)",
+      "Bash(__NEW_LINE_fc8421a62a44750a__ chmod +x /tmp/comprehensive_api_test.sh)",
+      "Bash(bash /tmp/comprehensive_api_test.sh)",
+      "Bash(./mvnw clean compile:*)",
+      "Bash(bash /tmp/final_complete_test.sh)",
+      "Bash(git commit:*)"
     ]
   }
 }
